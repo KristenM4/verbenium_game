@@ -5,6 +5,7 @@ const TILE_H: u32 = 28;
 const WALK_FRAMES: usize = 4;
 const MOVE_SPEED: f32 = 140.0;
 const ANIM_DT: f32 = 0.1;
+const PLAYER_Z: f32 = 20.0;
 
 #[derive(Component)]
 struct Player;
@@ -52,7 +53,7 @@ fn spawn_player(
                     index: start_index,
                 },
             ),
-            Transform::from_translation(Vec3::ZERO),
+            Transform::from_translation(Vec3::new(0., 0., PLAYER_Z)),
             Player,
             AnimationState { facing, moving: false, was_moving: false },
             AnimationTimer(Timer::from_seconds(ANIM_DT, TimerMode::Repeating)),
