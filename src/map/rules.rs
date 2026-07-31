@@ -30,7 +30,7 @@ fn build_dirt_layer(
 
 pub fn build_world() -> (
     Vec<Vec<SpawnableAsset>>,
-    ModelSocketCollection<Cartesian3D>,
+    ModelCollection<Cartesian3D>,
     SocketCollection,
 ) {
     let mut socket_collection = SocketCollection::new();

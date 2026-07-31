@@ -15,7 +15,7 @@ pub struct TilemapDefinition {
 }
 
 impl TilemapDefinition {
-    pub const tile_size(&self) -> UVec2 {
+    pub const fn tile_size(&self) -> UVec2 {
         UVec2::new(self.tile_width, self.tile_height)
     }
 

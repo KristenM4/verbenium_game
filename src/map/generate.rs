@@ -9,7 +9,7 @@ use crate::map::{
 pub const GRID_X: u32 = 25;
 pub const GRID_Y: u32 = 18;
 
-const ASSETS_PATH: &str = "tilelayers";
+const ASSETS_PATH: &str = "tile_layers";
 const TILEMAP_FILE: &str = "tilemap.png";
 
 pub const TILE_SIZE: f32 = 32.;
@@ -27,7 +27,7 @@ pub fn setup_generator(
     asset_server: Res<AssetServer>,
     mut atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    let (asset_definitions, models, socket_collection) = build_world();
+    let (assets_definitions, models, socket_collection) = build_world();
 
     let rules = RulesBuilder::new_cartesian_3d(models, socket_collection)
         .with_rotation_axis(Direction::ZForward)

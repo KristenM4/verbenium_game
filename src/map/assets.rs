@@ -5,7 +5,7 @@ use crate::map::tilemap::TILEMAP;
 #[derive(Clone)]
 pub struct SpawnableAsset {
     sprite_name: &'static str,
-    grid_offset: GridDetla,
+    grid_offset: GridDelta,
     offset: Vec3,
     components_spawner: fn(&mut EntityCommands),
 }
@@ -33,10 +33,10 @@ pub struct TilemapHandles {
 }
 
 impl TilemapHandles {
-    pub fn sprite(&self, atlas index: usize) -> Sprite {
+    pub fn sprite(&self, atlas_index: usize) -> Sprite {
         Sprite::from_atlas_image(
             self.image.clone(),
-            TextureAtlas::from(self.layout.clone()),with_index(atlas_index),
+            TextureAtlas::from(self.layout.clone()).with_index(atlas_index),
         )
     }
 }
@@ -81,7 +81,7 @@ pub fn load_assets(
                     assets_bundle: tilemap_handles.sprite(atlas_index),
                     grid_offset,
                     world_offset: offset,
-                    spawn_commends: components_spawner,
+                    spawn_commands: components_spawner,
                 },
             )
         }
