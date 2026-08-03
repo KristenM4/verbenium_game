@@ -1,4 +1,3 @@
-mod map;
 mod player;
 
 use bevy::{
@@ -6,44 +5,38 @@ use bevy::{
     window::{Window, WindowPlugin, WindowResolution},
 };
 
-use bevy_procedural_tilemaps::prelude::*;
+use bevy_ecs_ldtk::prelude::*;
 
-use crate::map::generate::{map_pixel_dimensions, setup_generator};
 use crate::player::PlayerPlugin;
 
 fn main() {
-    let map_size = map_pixel_dimensions();
-
     App::new()
-        .insert_resource(ClearColor(Color::WHITE))
+        .insert_resource(LevelSelection::index(0))
         .add_plugins(
             DefaultPlugins
                 .set(AssetPlugin {
                 file_path: "src/assets".into(),
                 ..default()
                 })
-                .set(WindowPlugin {
-                    primary_window: Some(Window {
-                        resolution: WindowResolution::new(map_size.x as u32, map_size.y as u32),
-                        resizable: false,
-                        ..default()
-                    }),
-                    ..default()
-                })
                 .set(ImagePlugin::default_nearest()),
         )
-        .add_plugins(ProcGenSimplePlugin::<Cartesian3D, Sprite>::default())
-        .add_systems(Startup, (setup_camera, setup_generator))
+        .add_systems(Startup, (setup_camera))
         .add_plugins(PlayerPlugin)
+        .add_plugins(LdtkPlugin)
         .run();
 }
 
-fn setup_camera(mut commands: Commands) {
+fn setup_camera(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
             Camera2d,
             Projection::Orthographic(OrthographicProjection {
-                scale: 0.25,
+                scale: 0.5,
                 ..OrthographicProjection::default_2d()
             }),
     ));
+
+    commands.spawn(LdtkWorldBundle {
+        ldtk_handle: asset_server.load("firstlevel.ldtk").into(),
+        ..Default::default()
+    });
 }
