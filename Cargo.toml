@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 bevy = "0.19"
 bevy_procedural_tilemaps = "0.4.0"
+bevy_ecs_ldtk = "0.15.0"
