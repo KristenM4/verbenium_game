@@ -20,7 +20,7 @@ fn main() {
                 })
                 .set(ImagePlugin::default_nearest()),
         )
-        .add_systems(Startup, (setup_camera))
+        .add_systems(Startup, (setup_camera, spawn_map))
         .add_plugins(PlayerPlugin)
         .add_plugins(LdtkPlugin)
         .run();
@@ -35,7 +35,9 @@ fn setup_camera(mut commands: Commands, asset_server: Res<AssetServer>) {
             }),
             Transform::from_xyz(1280.0 / 4.0, 720.0 / 4.0, 0.0),
     ));
+}
 
+fn spawn_map(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(LdtkWorldBundle {
         ldtk_handle: asset_server.load("firstlevel.ldtk").into(),
         ..Default::default()
