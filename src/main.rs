@@ -1,8 +1,7 @@
 mod player;
 
 use bevy::{
-    prelude::*,
-    window::{Window, WindowPlugin, WindowResolution},
+    prelude::*
 };
 
 use bevy_ecs_ldtk::prelude::*;
@@ -26,7 +25,7 @@ fn main() {
         .run();
 }
 
-fn setup_camera(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup_camera(mut commands: Commands) {
     commands.spawn((
             Camera2d,
             Projection::Orthographic(OrthographicProjection {
