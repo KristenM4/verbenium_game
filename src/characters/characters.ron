@@ -1,0 +1,34 @@
+(
+	characters: [
+		(
+		name: "default",
+		max_health: 100.0,
+		base_move_speed: 140.0,
+		run_speed_multiplier: 1.8,
+		texture_path: "spritesheet-2.png",
+		tile_size: 28,
+		atlas_columns: 4,
+		animations: {
+			Walk: (
+				start_row: 0,
+				frame_count: 4,
+				frame_time: 0.1,
+				directional: true,
+			),
+			Run: (
+				start_row: 4,
+				frame_count: 4,
+				frame_time: 0.05,
+				directional: true,
+			),
+			Jump: (
+				start_row: 8,
+				frame_count: 4,
+				frame_time: 0.1,
+				directional: true,
+			),
+		}
+		),
+	]
+)
+	
