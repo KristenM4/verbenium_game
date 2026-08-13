@@ -1,12 +1,10 @@
-mod player;
+mod characters;
 
 use bevy::{
     prelude::*
 };
 
 use bevy_ecs_ldtk::prelude::*;
-
-use crate::player::PlayerPlugin;
 
 fn main() {
     App::new()
@@ -20,8 +18,8 @@ fn main() {
                 .set(ImagePlugin::default_nearest()),
         )
         .add_systems(Startup, (setup_camera, spawn_map))
-        .add_plugins(PlayerPlugin)
         .add_plugins(LdtkPlugin)
+        .add_plugins(characters::CharactersPlugin)
         .run();
 }
 
