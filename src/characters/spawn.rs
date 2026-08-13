@@ -8,7 +8,7 @@ const PLAYER_Z_POSITION: f32 = 20.0;
 
 #[derive(Resource, Default)]
 pub struct CurrentCharacterIndex {
-    pub index: usize;
+    pub index: usize,
 }
 
 #[derive(Resource)]
@@ -66,7 +66,7 @@ pub fn initialize_player_character(
     };
 
     for entity in query.iter_mut() {
-        let Some(characters_list) = characters_lists.get(&characters_list_res_handle) else {
+        let Some(characters_list) = characters_lists.get(&characters_list_res.handle) else {
             continue;
         };
 
@@ -98,7 +98,7 @@ pub fn initialize_player_character(
 pub fn switch_character(
     input: Res<ButtonInput<KeyCode>>,
     mut character_index: ResMut<CurrentCharacterIndex>,
-    characters_lists: Res<Assets<CharactersLists>>,
+    characters_lists: Res<Assets<CharactersList>>,
     characters_list_res: Option<Res<CharactersListResource>>,
     mut query: Query<(
         &mut CharacterEntry,
@@ -124,7 +124,7 @@ pub fn switch_character(
         return;
     };
 
-    let Some(characters_list) = characters_list.get(&characters_list_res.handle) else {
+    let Some(characters_list) = characters_lists.get(&characters_list_res.handle) else {
         return;
     };
 
@@ -151,5 +151,5 @@ pub fn switch_character(
             layout,
             index: 0,
         },
-    };
+    );
 }

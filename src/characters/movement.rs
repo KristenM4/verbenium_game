@@ -55,7 +55,7 @@ pub fn move_player(
         let delta = direction.normalize() * move_speed * time.delta_secs();
         transform.translation += delta.extend(0.0);
 
-        animation.facing = Facing::from_direction(direction);
+        animated.facing = Facing::from_direction(direction);
 
         if !state.is_jumping {
             state.is_moving = true;

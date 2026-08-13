@@ -17,7 +17,7 @@ pub struct AnimationDefinition {
     pub directional: bool,
 }
 
-#[derive(Component, Asset, TypePath, Debug, Clone, Serialize, Deserialze)]
+#[derive(Component, Asset, TypePath, Debug, Clone, Serialize, Deserialize)]
 pub struct CharacterEntry {
     pub name: String,
     pub max_health: f32,
@@ -33,7 +33,7 @@ impl CharacterEntry {
     pub fn calculate_max_animation_row(&self) -> usize {
         self.animations
             .values()
-            .map(|def| if def.directional { def.start_row + 3 } else { def.start_row }
+            .map(|def| if def.directional { def.start_row + 3 } else { def.start_row })
             .max()
             .unwrap_or(0)
     }

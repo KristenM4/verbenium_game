@@ -137,12 +137,12 @@ pub fn animate_characters(
         
         if animation_changed {
             atlas.index = clip.start();
-            timer.0.set_duration(std::time::Duration::from_secs_f32(anim.def.frame_time));
+            timer.0.set_duration(std::time::Duration::from_secs_f32(anim_def.frame_time));
             timer.0.reset();
         } else if should_animate {
             timer.tick(time.delta());
             if timer.just_finished() {
-                atlas.index = clip.next(atlas_index);
+                atlas.index = clip.next(atlas.index);
             }
         } else {
             if atlas.index != clip.start() {
