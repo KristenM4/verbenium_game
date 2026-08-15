@@ -3,8 +3,8 @@
 		(
 		name: "default",
 		max_health: 100.0,
-		base_move_speed: 140.0,
-		run_speed_multiplier: 1.8,
+		base_move_speed: 110.0,
+		run_speed_multiplier: 1.4,
 		texture_path: "spritesheet-2.png",
 		tile_size: 28,
 		atlas_columns: 4,
