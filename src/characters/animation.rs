@@ -17,7 +17,7 @@ impl Facing {
         if direction.x.abs() > direction.y.abs() {
             if direction.x > 0.0 { Facing::Right } else { Facing::Left }
         } else {
-            if direction.x > 0.0 { Facing::Up } else { Facing::Down }
+            if direction.y > 0.0 { Facing::Up } else { Facing::Down }
         }
     }
 
