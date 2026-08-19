@@ -7,7 +7,7 @@
 		run_speed_multiplier: 1.4,
 		texture_path: "spritesheet-2.png",
 		tile_size: 28,
-		atlas_columns: 4,
+		atlas_columns: 8,
 		animations: {
 			Walk: (
 				start_row: 0,
@@ -17,7 +17,7 @@
 			),
 			Run: (
 				start_row: 4,
-				frame_count: 4,
+				frame_count: 8,
 				frame_time: 0.05,
 				directional: true,
 			),
