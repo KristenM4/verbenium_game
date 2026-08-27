@@ -1,4 +1,5 @@
 mod characters;
+mod state;
 
 use bevy::{
     prelude::*
@@ -19,6 +20,7 @@ fn main() {
         )
         .add_systems(Startup, (setup_camera, spawn_map))
         .add_plugins(LdtkPlugin)
+        .add_plugins(state::StatePlugin)
         .add_plugins(characters::CharactersPlugin)
         .run();
 }
