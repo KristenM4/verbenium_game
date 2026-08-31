@@ -1,70 +1,27 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 use crate::characters::config::{CharacterEntry, AnimationType};
+use crate::characters::state::CharacterState;
+use crate::characters::facing::Facing;
 
 pub const DEFAULT_ANIMATION_FRAME_TIME: f32 = 0.1;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum Facing {
-    Up,
-    Left,
-    Down,
-    Right,
-}
-
-impl Facing {
-    pub fn from_direction(direction: Vec2) -> Self {
-        if direction.x.abs() > direction.y.abs() {
-            if direction.x > 0.0 { Facing::Right } else { Facing::Left }
-        } else {
-            if direction.y > 0.0 { Facing::Up } else { Facing::Down }
-        }
-    }
-
-    fn direction_index(self) -> usize {
-        match self {
-            Facing::Up => 2,
-            Facing::Left => 1,
-            Facing::Down => 0,
-            Facing::Right => 3,
-        }
-    }
-}
-
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct AnimationController {
     pub current_animation: AnimationType,
-    pub facing: Facing,
-}
-
-impl Default for AnimationController {
-    fn default() -> Self {
-        Self {
-            current_animation: AnimationType::Walk,
-            facing: Facing::Down,
-        }
-    }
 }
 
 impl AnimationController {
-    pub fn get_clip(&self, config: &CharacterEntry) -> Option<AnimationClip> {
+    pub fn get_clip(&self, config: &CharacterEntry, facing: Facing) -> Option<AnimationClip> {
         let def = config.animations.get(&self.current_animation)?;
         let row = if def.directional {
-            def.start_row + self.facing.direction_index()
+            def.start_row + facing.direction_index()
         } else {
             def.start_row
         };
 
         Some(AnimationClip::new(row, def.frame_count, config.atlas_columns))
     }
-}
-
-#[derive(Component, Default)]
-pub struct AnimationState {
-    pub is_moving: bool,
-    pub was_moving: bool,
-    pub is_jumping: bool,
-    pub was_jumping: bool,
 }
 
 #[derive(Component, Deref, DerefMut)]
@@ -152,9 +109,66 @@ pub fn animate_characters(
     }
 }
 
-    pub fn update_animation_flags(mut query: Query<&mut AnimationState>) {
-        for mut state in query.iter_mut() {
-            state.was_moving = state.is_moving;
-            state.was_jumping = state.is_jumping;
+pub fn on_state_change_update_animation(
+    mut query: Query<
+        (&CharacterState, &mut AnimationController, &mut AnimationTimer),
+        Changed<CharacterState>
+    >,
+) {
+    for (state, mut controller, mut timer) in query.iter_mut() {
+        let new_animation = match state {
+            CharacterState::Idle | CharacterState::Walking => AnimationType::Walk,
+            CharacterState::Running => AnimationType::Run,
+            CharacterState::Jumping => AnimationType::Jump,
+        };
+
+        if controller.current_animation != new_animation {
+            controller.current_animation = new_animation;
+            timer.0.reset();
         }
     }
+}
+
+pub fn animations_playback(
+    time: Res<Time>,
+    mut query: Query<(
+        &characterState,
+        &Facing,
+        &AnimationController,
+        &mut AnimationTimer,
+        &mut Sprite,
+        &CharacterEntry,
+    )>,
+) {
+    for (state, facing, controller, mut timer, mut sprite, config) in query.iter_mut() {
+        if *state == CharacterState::Idle {
+            if let Some(atlas) = sprite.texture_atlas.as_mut() {
+                if let Some(clip) = controller.get_clip(config, *facing) {
+                    if atlas.index != clip.start() {
+                        atlas.index = clip.start();
+                    }
+                }
+            }
+            continue;
+        }
+
+        let Some(atlas) = sprite.texture_atlas.as_mut() else { continue };
+        let Some(clip) = controller.get_clip(config, *facing) else { continue };
+        let Some(anim_def) = config.animations.get(&controller.current_animation) else { continue };
+
+        if !clip.contains(atlas.index) {
+            atlas.index = clip.start();
+            timer.0.reset();
+        }
+
+        let expected_duration = std::time::Duration::from_secs_f32(anim_def.frame_time);
+        if time.0.duration() != expected_duration {
+            timer.0.set_duration(expected_duration);
+        }
+
+        timer.tick(time.delta());
+        if time.just_finished() {
+            atlas.index = clip.next(atlas_index);
+        }
+    }
+}

@@ -2,6 +2,8 @@ pub mod animation;
 pub mod config;
 pub mod movement;
 pub mod spawn;
+pub mod state;
+pub mod facing;
 
 use bevy::prelude::*;
 use bevy_common_assets::ron::RonAssetPlugin;
