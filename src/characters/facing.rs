@@ -10,7 +10,7 @@ pub enum Facing {
 }
 
 impl Facing {
-    pub fn from_velociy(velocity: Vec2) -> Self {
+    pub fn from_velocity(velocity: Vec2) -> Self {
         if velocity.x.abs() > velocity.y.abs() {
             if velocity.x > 0.0 { Facing::Right } else { Facing::Left }
         } else {

@@ -63,52 +63,6 @@ impl AnimationClip {
     }
 }
 
-pub fn animate_characters(
-    time: Res<Time>,
-    mut query: Query<(
-        &AnimationController,
-        &AnimationState,
-        &mut AnimationTimer,
-        &mut Sprite,
-        &CharacterEntry,
-    )>,
-) {
-    for (animated, state, mut timer, mut sprite, config) in query.iter_mut() {
-        let Some(atlas) = sprite.texture_atlas.as_mut() else { continue; };
-        let Some(clip) = animated.get_clip(config) else { continue; };
-        let Some(anim_def) = config.animations.get(&animated.current_animation) else { continue; };
-
-        if !clip.contains(atlas.index) {
-            atlas.index = clip.start(); 
-            timer.0.reset();
-        }
-        
-        let just_started_moving = state.is_moving && !state.was_moving;
-        let just_stopped_moving = !state.is_moving && state.was_moving;
-        let just_started_jumping = state.is_jumping && !state.was_jumping;
-        let just_stopped_jumping = !state.is_jumping && state.was_jumping;
-        
-        let should_animate = state.is_jumping || state.is_moving;
-        let animation_changed = just_started_moving || just_started_jumping
-                              || just_stopped_moving || just_stopped_jumping;
-        
-        if animation_changed {
-            atlas.index = clip.start();
-            timer.0.set_duration(std::time::Duration::from_secs_f32(anim_def.frame_time));
-            timer.0.reset();
-        } else if should_animate {
-            timer.tick(time.delta());
-            if timer.just_finished() {
-                atlas.index = clip.next(atlas.index);
-            }
-        } else {
-            if atlas.index != clip.start() {
-                atlas.index = clip.start();
-            }
-        }
-    }
-}
-
 pub fn on_state_change_update_animation(
     mut query: Query<
         (&CharacterState, &mut AnimationController, &mut AnimationTimer),
@@ -132,7 +86,7 @@ pub fn on_state_change_update_animation(
 pub fn animations_playback(
     time: Res<Time>,
     mut query: Query<(
-        &characterState,
+        &CharacterState,
         &Facing,
         &AnimationController,
         &mut AnimationTimer,
@@ -162,13 +116,13 @@ pub fn animations_playback(
         }
 
         let expected_duration = std::time::Duration::from_secs_f32(anim_def.frame_time);
-        if time.0.duration() != expected_duration {
+        if timer.0.duration() != expected_duration {
             timer.0.set_duration(expected_duration);
         }
 
         timer.tick(time.delta());
-        if time.just_finished() {
-            atlas.index = clip.next(atlas_index);
+        if timer.just_finished() {
+            atlas.index = clip.next(atlas.index);
         }
     }
 }
