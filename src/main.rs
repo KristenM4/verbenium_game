@@ -1,5 +1,6 @@
 mod characters;
 mod state;
+mod world;
 
 use bevy::{
     prelude::*
@@ -22,6 +23,7 @@ fn main() {
         .add_plugins(LdtkPlugin)
         .add_plugins(state::StatePlugin)
         .add_plugins(characters::CharactersPlugin)
+        .add_plugins(world::WorldPlugin)
         .run();
 }
 
