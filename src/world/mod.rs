@@ -12,6 +12,7 @@ impl Plugin for WorldPlugin {
         app
             .register_ldtk_int_cell::<SolidBundle>(1)
             .init_resource::<SolidCells>()
-            .add_systems(Update, collision::cache_solid_cells);
+            .add_systems(PostUpdate, collision::cache_solid_cells
+                .after(TransformSystems::Propagate));
     }
 }
